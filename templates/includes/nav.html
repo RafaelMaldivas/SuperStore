@@ -38,14 +38,12 @@
                             <i class="fa fa-bars"></i> Todas as Categorias
                         </button>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#">Utilidades e Ferramentas</a>
-                            <a class="dropdown-item" href="#">Eletrodomésticos e Artigos para a Casa</a>
-                            <a class="dropdown-item" href="#">Eletrônicos e Portáteis</a>
-                            <a class="dropdown-item" href="#">Roupas e Acessórios</a>
-                            <a class="dropdown-item" href="#">Calçados</a>
-                            <a class="dropdown-item" href="#">Saúde e Beleza</a>
+                            {% for categoria in links %}
+                            <a class="dropdown-item" href="#">{{ categoria.categoria_nome }}</a>
+                            {% endfor %}
                         </div>
                     </div> <!-- category-wrap.// -->
+                    
                 </div> <!-- col.// -->
                 <a href="./store.html" class="btn btn-outline-warning">Nossa Loja</a>
                 <div class="col-lg  col-md-6 col-sm-12 col">

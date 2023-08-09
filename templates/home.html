@@ -18,13 +18,14 @@
     <div class="container">
 
         <header class="section-heading">
-            <a href="./store.html" class="btn btn-outline-warning float-right">Ver Tudo</a>
+            <a href="{% url 'store' %}" class="btn btn-outline-warning float-right">Ver Tudo</a>
             <h3 class="section-title">Mais Procurados</h3>
         </header><!-- sect-heading -->
 
 
         <div class="row">
             {% for produto in produtos %}
+            {% if forloop.counter <= 12 %}
             <div class="col-md-3">
                 <div class="card card-product-grid">
                     <a href="./product-detail.html" class="img-wrap"> <img src="{{ produto.foto.url }}">
@@ -35,6 +36,7 @@
                     </figcaption>
                 </div>
             </div> <!-- col.// -->
+            {% endif %}
             {% endfor %}
         </div> <!-- row.// -->
 

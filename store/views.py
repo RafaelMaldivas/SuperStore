@@ -1,6 +1,9 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Produto, Categoria
+import random
 # Create your views here.
+
+
 
 def store(request, categoria_slug=None):
     categorias = None
@@ -17,3 +20,5 @@ def store(request, categoria_slug=None):
         'produto_count' : produto_count,
     }
     return render(request, 'store/store.html', context)
+
+

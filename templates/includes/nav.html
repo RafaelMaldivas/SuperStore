@@ -29,8 +29,8 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-2 col-md-3 col-6">
-                    <a href="./" class="brand-wrap">
-                        <img class="logo" src="{% static 'images/logo_oficial.png' %}">
+                    <a href="{% url 'home' %}" class="brand-wrap">
+                        <img class="logo" src="{% static 'images/logo_oficial.png' %}" width="180" >
                     </a> <!-- brand-wrap.// -->
                 </div>
                 <div class="col-lg col-sm col-md col-6 flex-grow-0">
@@ -40,6 +40,7 @@
                             <i class="fa fa-bars"></i> Categorias
                         </button>
                         <div class="dropdown-menu">
+                            <a class="dropdown-item" href="{% url 'store' %}">Todos os Produtos</a>
                             {% for categoria in links %}
                             <a class="dropdown-item" href="{{categoria.get_url}}">{{ categoria.categoria_nome}}</a>
                             {% endfor %}
@@ -53,7 +54,7 @@
                             <input type="text" class="form-control" style="width:60%;" placeholder="Search">
 
                             <div class="input-group-append">
-                                <button class="btn btn-primary" type="submit">
+                                <button class="btn btn-warning" type="submit">
                                     <i class="fa fa-search"></i>
                                 </button>
                             </div>

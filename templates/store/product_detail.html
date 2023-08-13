@@ -22,7 +22,7 @@
 <h2 class="title">{{ single_product.produto_nome }}</h2>
 
 <div class="mb-3"> 
-	<var class="price h4">R$ {{ single_product.preco }}</var> 
+	<var class="price h4">R$ {{ single_product.preco|floatformat:2  }}</var>
 </div> 
 
 <p>{{ single_product.descricao }}</p>
@@ -71,7 +71,15 @@
 	{% if single_product.estoque <= 0 %}
 		<h3 class="text-danger"> Produto Fora de Estoque  </h3>
 	{% else %}
-		<a href="./product-detail.html" class="btn  btn-primary"> <span class="text">Add to cart</span> <i class="fas fa-shopping-cart"></i>  </a>
+		{% if in_cart %}
+			<a href="#" class="btn  btn-success"> <span class="text">Adicionado ao
+					Carrinho</span><i class="fa-solid fa-cart-arrow-down fa-lg" style="color: #fcfcfd;"></i> </a>
+			<a href="{% url 'cart' %}" class="btn  btn-outline-primary"> <span class="text">Ver Carrinho de Compras</span> <i
+					class="fa-solid fa-eye"></i> </a>
+		{% else %}
+			<a href="{% url 'add_cart' single_product.id %}" class="btn  btn-primary"> <span class="text">Adicionar ao
+					Carrinho</span> <i class="fa-solid fa-cart-plus fa-beat-fade fa-lg"></i> </a>
+		{% endif %}
 	{% endif %}
 	</article> <!-- product-info-aside .// -->
 		</main> <!-- col.// -->

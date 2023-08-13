@@ -127,17 +127,17 @@
                     <div class="col-md-4">
                         <figure class="card card-product-grid">
                             <div class="img-wrap">
-                                <img src="{{ produto.foto.url }}">
+                                <a href="{{ produto.get_url }}"> <img src="{{ produto.foto.url }}" alt="Ver Detalhes do Produto"> </a>
                             </div> <!-- img-wrap.// -->
                             <figcaption class="info-wrap">
                                 <div class="fix-height">
                                     <a href="{{ produto.get_url }}" class="title">{{ produto.produto_nome }}</a>
                                     <div class="price-wrap mt-2">
-                                        <span class="price">R$ {{ produto.preco }}</span>
+                                        <span class="price">R$ {{ produto.preco|floatformat:2 }}</span>
                                     </div> <!-- price-wrap.// -->
                                 </div>
-                                <a href="#" class="btn btn-block btn-warning">Add to cart </a>
-                            </figcaption>
+                                <a href="{{ produto.get_url }}" class="btn btn-block btn-outline-danger"> Ver Detalhes </a>
+                                </figcaption>
                         </figure>
                     </div> <!-- col.// -->
                     {% endfor %}

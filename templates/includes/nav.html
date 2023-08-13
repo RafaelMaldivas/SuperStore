@@ -18,8 +18,10 @@
                     </li>
                 </ul>
                 <ul class="navbar-nav">
-                    <li><a href="#" class="nav-link"> <i class="fa fa-envelope"></i> Email </a></li>
-                    <li><a href="#" class="nav-link"> <i class="fa fa-phone"></i> Call us </a></li>
+                    <li><a href="#" class="nav-link"> <i class="fa-solid fa-envelope"></i> Email </a></li>
+                    <li><a href="https://api.whatsapp.com/send/?phone=5511965739330&text&type=phone_number&app_absent=0"
+                            class="nav-link" target="_blank"> <i class="fa-brands fa-whatsapp fa-bounce fa-lg"
+                                style="color: #69e218;"></i></i> Contate-nos </a></li>
                 </ul> <!-- list-inline //  -->
             </div> <!-- navbar-collapse .// -->
         </div> <!-- container //  -->
@@ -70,10 +72,11 @@
                                 <a href="./register.html"> Register</a>
                             </div>
                         </div>
-                        <a href="./cart.html" class="widget-header pl-3 ml-3">
-                            <div class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart"></i>
+                        <a href="{% url 'cart' %}" class="widget-header pl-3 ml-3">
+                            <div class="icon icon-sm rounded-circle border"><i
+                                    class="fa-solid fa-cart-shopping fa-beat fa-lg"></i>
                             </div>
-                            <span class="badge badge-pill badge-danger notify">0</span>
+                            <span class="badge badge-pill badge-danger notify">{{ cart_count }}</span>
                         </a>
                     </div> <!-- widgets-wrap.// -->
                 </div> <!-- col.// -->

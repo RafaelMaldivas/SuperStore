@@ -28,7 +28,7 @@
             {% if forloop.counter <= 12 %}
             <div class="col-md-3">
                 <div class="card card-product-grid">
-                    <a href="./product-detail.html" class="img-wrap"> <img src="{{ produto.foto.url }}">
+                    <a href="{{ produto.get_url }}" class="img-wrap"> <img src="{{ produto.foto.url }}">
                     </a>
                     <figcaption class="info-wrap">
                         <a href="./product-detail.html" class="title">{{ produto.produto_nome }}</a>

@@ -1,8 +1,8 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Produto, Categoria
-import random
-# Create your views here.
+from .models import Produto
+from categoria.models import Categoria
 
+# Create your views here.
 
 
 def store(request, categoria_slug=None):
@@ -22,3 +22,14 @@ def store(request, categoria_slug=None):
     return render(request, 'store/store.html', context)
 
 
+def product_detail(request, categoria_slug, produto_slug):
+    try:
+        single_product = Produto.objects.get(categoria__slug=categoria_slug, slug=produto_slug)
+    except Exception as e:
+        raise e
+
+    context = {
+        'single_product': single_product,
+    }
+
+    return render(request, 'store/product_detail.html', context)

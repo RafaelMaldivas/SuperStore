@@ -1,5 +1,6 @@
 from django.db import models
 from categoria.models import Categoria
+from django.urls import reverse
 # Create your models here.
 class Produto(models.Model):
     produto_nome = models.CharField(max_length=200, unique=True)
@@ -16,6 +17,10 @@ class Produto(models.Model):
     class Meta:
         verbose_name = 'produto'
         verbose_name_plural  ='produtos'
+
+    def get_url(self):
+
+        return reverse('product_detail', args=[self.categoria.slug, self.slug])
 
     def __str__(self):
         return self.produto_nome

@@ -131,7 +131,7 @@
                             </div> <!-- img-wrap.// -->
                             <figcaption class="info-wrap">
                                 <div class="fix-height">
-                                    <a href="./product-detail.html" class="title">{{ produto.produto_nome }}</a>
+                                    <a href="{{ produto.get_url }}" class="title">{{ produto.produto_nome }}</a>
                                     <div class="price-wrap mt-2">
                                         <span class="price">R$ {{ produto.preco }}</span>
                                     </div> <!-- price-wrap.// -->

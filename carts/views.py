@@ -41,15 +41,37 @@ def add_cart(request, produto_id):
         cart = Cart.objects.create(cart_id=_cart_id(request))
     cart.save()
 
-    try:
-        cart_item = CartItem.objects.get(produto=produto, cart=cart)
-        if len(produto_variation) > 0:
-            cart_item.variations.clear()
-            for item in produto_variation:
-                cart_item.variations.add(item)
-        cart_item.quantidade += 1  # cart_item adicona outro item
-        cart_item.save()
-    except CartItem.DoesNotExist:
+    is_cart_item_exists = CartItem.objects.filter(produto=produto, cart=cart).exists()
+    if is_cart_item_exists:
+        cart_item = CartItem.objects.filter(produto=produto, cart=cart)
+        # se existir variações -> relacionado ao DB
+        # considerar a variação corrente -> relacionado a lista de variações
+        # considerar item_id -> relacionado ao DB
+        ex_var_list = []
+        id = []
+        for item in cart_item:
+            existing_variation = item.variations.all()
+            ex_var_list.append(list(existing_variation))
+            id.append(item.id)
+
+        print(ex_var_list)
+
+        if produto_variation in ex_var_list:
+            # condiçao de incremento de product.variation no cart
+            index = ex_var_list.index(produto_variation)
+            item_id = id[index]
+            item = CartItem.objects.get(produto=produto, id=item_id)
+            item.quantidade += 1
+            item.save()
+
+        else:
+            item = CartItem.objects.create(produto=produto, quantidade=1, cart=cart)
+            # cria novo item no cart
+            if len(produto_variation) > 0:
+                item.variations.clear()
+                item.variations.add(*produto_variation)
+            item.save()
+    else:
         cart_item = CartItem.objects.create(
             produto=produto,
             quantidade=1,
@@ -57,10 +79,8 @@ def add_cart(request, produto_id):
         )
         if len(produto_variation) > 0:
             cart_item.variations.clear()
-            for item in produto_variation:
-                cart_item.variations.add(item)
-    cart_item.save()
-
+            cart_item.variations.add(*produto_variation)
+        cart_item.save()
     return redirect("cart")
 
 
@@ -92,22 +112,25 @@ def cart(request, total=0, quantidade=0, cart_items=None):
     return render(request, "store/cart.html", context)
 
 
-def remove_cart(request, produto_id):
+def remove_cart(request, produto_id, cart_item_id):
     cart = Cart.objects.get(cart_id=_cart_id(request))
     produto = get_object_or_404(Produto, id=produto_id)
-    cart_item = CartItem.objects.get(produto=produto, cart=cart)
-    if cart_item.quantidade > 1:
-        cart_item.quantidade -= 1
-        cart_item.save()
-    else:
-        cart_item.delete()
+    try:     
+        cart_item = CartItem.objects.get(produto=produto, cart=cart, id=cart_item_id)
+        if cart_item.quantidade > 1:
+            cart_item.quantidade -= 1
+            cart_item.save()
+        else:
+            cart_item.delete()
+    except:
+        pass
     return redirect("cart")
 
 
-def remove_cart_item(request, produto_id):
+def remove_cart_item(request, produto_id, cart_item_id):
     cart = Cart.objects.get(cart_id=_cart_id(request))
     produto = get_object_or_404(Produto, id=produto_id)
-    cart_item = CartItem.objects.get(produto=produto, cart=cart)
+    cart_item = CartItem.objects.get(produto=produto, cart=cart, id=cart_item_id)
 
     cart_item.delete()
     return redirect("cart")

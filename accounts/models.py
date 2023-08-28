@@ -41,6 +41,7 @@ class Account(AbstractBaseUser):
     username = models.CharField(max_length=50, unique=True)
     email = models.EmailField(max_length=100, unique=True)
     telefone = models.CharField(max_length=20)
+   
 
     #required
     data_de_entrada = models.DateTimeField(auto_now_add=True)
@@ -49,9 +50,9 @@ class Account(AbstractBaseUser):
     is_staff =  models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
     is_superadmin = models.BooleanField(default=False)
-
+   
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'primeiro_nome', 'ultimo_nome']
+    REQUIRED_FIELDS = ['username', 'primeiro_nome', 'ultimo_nome',]
 
     objects = MyAccountManager()
 

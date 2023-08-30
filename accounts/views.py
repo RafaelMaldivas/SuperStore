@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
-from django.contrib import messages
+from django.contrib import messages, auth
 from .forms import RegisterForms, Account
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def register(request):
@@ -27,8 +28,25 @@ def register(request):
     return render(request, 'accounts/register.html', context)
 
 def login(request):
+    if request.method == 'POST':
+        email = request.POST['email']
+        password = request.POST['password']
+
+        user  = auth.authenticate(email=email, password=password)
+
+        if user is not None:
+            auth.login(request, user)
+            messages.success(request, 'Você está logado!')
+            return redirect('home')
+        else:
+            messages.error(request, 'Erro ao logar, verifique suas credenciais')
+            return redirect('login')
+        
     return render(request, 'accounts/login.html')
 
 
+@login_required(login_url = 'login')
 def logout(request):
-    return render(request, 'accounts/logout.html')
+    auth.logout(request)
+    messages.success(request, 'Você saiu da sua conta')
+    return redirect('login')

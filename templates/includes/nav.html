@@ -32,7 +32,7 @@
             <div class="row align-items-center">
                 <div class="col-lg-2 col-md-3 col-6">
                     <a href="{% url 'home' %}" class="brand-wrap">
-                        <img class="logo" src="{% static 'images/logo_oficial.png' %}" width="180" >
+                        <img class="logo" src="{% static 'images/logo_oficial.png' %}" width="180">
                     </a> <!-- brand-wrap.// -->
                 </div>
                 <div class="col-lg col-sm col-md col-6 flex-grow-0">
@@ -65,13 +65,25 @@
                 </div> <!-- col.// -->
                 <div class="col-lg-3 col-sm-6 col-8 order-2 order-lg-3">
                     <div class="d-flex justify-content-end mb-3 mb-lg-0">
+                        {% if user.id is not None %}
                         <div class="widget-header">
-                            <small class="title text-muted">Bem Vindo a SuperStore</small>
+                            <small class="title text-muted">Bem Vindo a SuperStore {{ user.primeiro_nome }}</small>
+                            <div>
+                                <a href="#">Dashboard</a> <span class="dark-transp"> | </span>
+                                <a href="{% url 'logout' %}"> Logout</a>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="widget-header">
+                            <small class="title text-muted">Bem Vindo a SuperStore convidado</small>
                             <div>
                                 <a href="{% url 'login' %}">Sign in</a> <span class="dark-transp"> | </span>
                                 <a href="{% url 'register' %}"> Registre-se</a>
+
                             </div>
                         </div>
+
+                        {% endif %}
                         <a href="{% url 'cart' %}" class="widget-header pl-3 ml-3">
                             <div class="icon icon-sm rounded-circle border"><i
                                     class="fa-solid fa-cart-shopping fa-beat fa-lg"></i>

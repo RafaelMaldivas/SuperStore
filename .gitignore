@@ -1,0 +1,51 @@
+# Arquivos de configuração do ambiente
+.env
+
+# Arquivos gerados automaticamente
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+
+# Diretório de dependências (criado por virtualenv)
+venv/
+env/
+
+# Arquivos de log
+*.log
+
+# Arquivos de backup
+*~
+
+# Arquivos de mídia carregados pelos usuários
+media/
+
+# Arquivos estáticos coletados
+staticfiles/
+
+# Banco de dados SQLite
+*.sqlite3
+
+# Senhas e chaves de autenticação
+secret_key.txt
+email_credentials.txt
+
+# Arquivos de configuração específicos do ambiente
+config/settings/local.py
+
+# Arquivos de mídia e banco de dados gerados localmente
+media/uploads/
+db.sqlite3
+
+# Arquivos de cache e sessões (gerados durante a execução)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Arquivos de cache do Django
+*.cache
+
+# Ambiente virtual do Pipenv
+.Pipfile*

@@ -1,0 +1,14 @@
+{% autoescape off %}
+
+Olá {{user.primeiro_nome}}, é um prazer termos você como nosso cliente, mas antes,
+
+Por favor clique no link abaixo para confirmar o seu cadastro na SuperStore.
+
+
+http://{{domain}}{% url 'activate' uidb64=uid token=token %}
+
+
+
+Se você não fez o cadastro na SuperStore, por favor ignore este email!
+
+{% endautoescape %}

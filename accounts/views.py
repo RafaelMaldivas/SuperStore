@@ -59,7 +59,7 @@ def login(request):
         if user is not None:
             auth.login(request, user)
             messages.success(request, 'Você está logado!')
-            return redirect('home')
+            return redirect('dashboard')
         else:
             messages.error(request, 'Erro ao logar, verifique suas credenciais')
             return redirect('login')
@@ -89,3 +89,8 @@ def activate(request, uidb64, token):
     else:
         messages.error(request, 'Link de ativação inválido')
         return redirect('register')
+    
+
+@login_required(login_url='login')
+def dashboard(request):
+    return render(request, 'accounts/dashboard.html')

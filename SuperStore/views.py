@@ -9,3 +9,6 @@ def home(request):
         'produtos': produto,
     }
     return render(request, 'home.html', context)
+
+
+

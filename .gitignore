@@ -28,8 +28,9 @@ staticfiles/
 *.sqlite3
 
 # Senhas e chaves de autenticação
-secret_key.txt
-email_credentials.txt
+
+EMAIL_HOST_USER = 'maldivassuperstore@gmail.com'
+EMAIL_HOST_PASSWORD = 'ypatsgikpyyxyirl'
 
 # Arquivos de configuração específicos do ambiente
 config/settings/local.py

@@ -69,7 +69,7 @@
                         <div class="widget-header">
                             <small class="title text-muted">Bem Vindo a SuperStore {{ user.primeiro_nome }}</small>
                             <div>
-                                <a href="#">Dashboard</a> <span class="dark-transp"> | </span>
+                                <a href="{% url 'dashboard' %}">Dashboard</a> <span class="dark-transp"> | </span>
                                 <a href="{% url 'logout' %}"> Logout</a>
                             </div>
                         </div>

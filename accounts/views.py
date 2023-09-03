@@ -3,6 +3,8 @@ from django.contrib import messages, auth
 from .forms import RegisterForms, Account
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+from carts.models import Cart, CartItem
+from carts.views import _cart_id
 # verificação de email
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
@@ -57,6 +59,18 @@ def login(request):
         user  = auth.authenticate(email=email, password=password)
 
         if user is not None:
+            try:
+                cart = Cart.objects.get(cart_id=_cart_id(request))
+                is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
+                if is_cart_item_exists:
+                    cart_item = CartItem.objects.filter(cart=cart)
+
+                    for item in cart_item:
+                        item.user = user
+                        item.save()
+            except:
+                
+                pass
             auth.login(request, user)
             messages.success(request, 'Você está logado!')
             return redirect('dashboard')

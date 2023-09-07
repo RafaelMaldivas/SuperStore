@@ -34,7 +34,7 @@ class Order(models.Model):
     telefone = models.CharField(max_length=15)
     email = models.EmailField(max_length=50)
     cep = models.CharField(max_length=8)
-    endereco = models.CharField(max_length=50)
+    logradouro = models.CharField(max_length=50)
     numero = models.IntegerField()
     complemento = models.CharField(max_length=20)
     bairro = models.CharField(max_length=50)
@@ -50,7 +50,7 @@ class Order(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.user.primeiro_nome
+        return self.primeiro_nome
 
 
 class OrderProduct(models.Model):

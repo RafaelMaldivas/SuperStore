@@ -4,11 +4,32 @@
 <!-- ========================= SECTION MAIN ========================= -->
 <section class="section-intro padding-y-sm">
     <div class="container">
-
-        <div class="intro-banner-wrap">
-            <img src="{% static 'images/banners/banner_oficial.png' %}" class="img-fluid rounded">
+        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+            <ol class="carousel-indicators">
+                <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+            </ol>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="{% static 'images/banners/banner_oficial.png' %}" alt="..." class="d-block w-100">
+                </div>
+                <div class="carousel-item">
+                    <img src="{% static 'images/banners/ecommerce.jpeg' %}" alt="..." class="d-block w-100">
+                </div>
+                <div class="carousel-item">
+                    <img src="{% static 'images/banners/faixa3.jpg' %}" alt="..." class="d-block w-100">
+                </div>
+            </div>
+            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Anterior</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Proximo</span>
+            </a>
         </div>
-
     </div> <!-- container //  -->
 </section>
 <!-- ========================= SECTION MAIN END// ========================= -->
@@ -25,8 +46,7 @@
 
         <div class="row">
             {% for produto in produtos %}
-            {% if forloop.counter <= 12 %}
-            <div class="col-md-3">
+            {% if forloop.counter <= 12 %} <div class="col-md-3">
                 <div class="card card-product-grid">
                     <a href="{{ produto.get_url }}" class="img-wrap"> <img src="{{ produto.foto.url }}">
                     </a>
@@ -35,10 +55,10 @@
                         <div class="price mt-1">R$ {{ produto.preco }}</div> <!-- price-wrap.// -->
                     </figcaption>
                 </div>
-            </div> <!-- col.// -->
-            {% endif %}
-            {% endfor %}
-        </div> <!-- row.// -->
+        </div> <!-- col.// -->
+        {% endif %}
+        {% endfor %}
+    </div> <!-- row.// -->
 
     </div><!-- container // -->
 </section>

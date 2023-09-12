@@ -3,7 +3,26 @@ from carts.models import CartItem
 from .forms import OrderForm
 import datetime
 from .models import Order
+import mercadopago
 
+
+
+sdk = mercadopago.SDK("APP_USR-4427427821291868-091015-077fa150887ef28ff5a3360d3ece1747-253859971")
+# ...
+'''payment_data = {
+    "transaction_amount": 100,
+    "token": "CARD_TOKEN",
+    "description": "Payment description",
+    "payment_method_id": 'visa',
+    "installments": 1,
+    "payer": {
+        "email": 'test_user_123456@testuser.com'
+    }
+}
+result = sdk.payment().create(payment_data)
+payment = result["response"]
+
+print(payment)'''
 
 # Create your views here.
 
@@ -62,7 +81,22 @@ def place_order(request, total=0, quantidade=0):
             data.order_number = order_number
             data.save()
 
-            return redirect('checkout')
+            order = Order.objects.get(user=current_user, is_ordered=False, order_number=order_number)
+
+            context = {
+                'order':order,
+                'cart_items': cart_items,
+                'total':total,
+                'taxa':taxa,
+                'grand_total':grand_total,
+
+            }
+            
+            return render(request, 'orders/pagamento.html', context)
     else:
         return redirect('checkout')
             
+
+def pagamento(request):
+              
+    return render(request, 'orders/pagamento.html')

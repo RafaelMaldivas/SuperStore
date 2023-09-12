@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<section class="section-content padding-y bg">
+    <div class="container">
+        <!-- ============================ COMPONENT 1 ================================= -->
+        <div class="row">
+            <aside class="col-lg-7">
+                <h4 class="text-info p-1">Revisão de Compra e Pagamento</h4>
+                <div class="card">
+                    <h5 class="card-header">Endereço de Entrega</h5>
+                    <div class="card-body">
+                        <p class="card-text text-bottom">Nome do Comprador: <b>{{order.full_name}}</b></p>
+                        <p class="card-text"><b>Email: </b>{{order.email}}</p>
+                        <p class="card-text"><b>Telefone: </b>{{order.telefone}}</p>
+                        <p class="card-text"><b>Endreço: </b>{{order.logradouro}} {{order.numero}} {{order.complemento}}
+                        </p>
+                        <p class="card-text">CEP:{{order.cep}} - Bairro:{{order.bairro}} - Cidade:{{order.cidade}} -
+                            UF:{{order.uf}}</p>
+                        <br>
+                        <p class="card-text text-uppercase">Observação: <b>{{order.order_note}}</b></p>
+                    </div> <!-- card.// -->
+                </div>
+                <br>
+                <div class="card">
+                    <h5 class="card-header">Forma de Pagamento</h5>
+                    <div class="card-body">
+                        <p class="card-text">PayPal</p>
+                    </div> <!-- card.// -->
+                </div>
+                <br>
+                <div class="card">
+                    <h5 class="card-header">Revisão dos Produtos</h5>
+                    <div class="card-body">
+                        <table class="table table-borderless table-shopping-cart">
+                            <thead class="text-muted">
+                                <tr class="small text-uppercase">
+                                    <th scope="col">Produtos</th>
+                                    <th scope="col" width="120">Quantidade</th>
+                                    <th scope="col" width="120">Preço</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for cart_item in cart_items %}
+                                <tr>
+                                    <td>
+                                        <figure class="itemside align-items-center">
+                                            <div class="aside"><img src="{{ cart_item.produto.foto.url }}"
+                                                    class="img-sm">
+                                            </div>
+                                            <figcaption class="info">
+                                                <a href="{{ cart_item.produto.get_url }}"
+                                                    class="title text-dark">{{cart_item.produto.produto_nome}}</a>
+                                                <p class="text-muted small">
+                                                    {% if cart_item.variations.all %}
+                                                    {% for item in cart_item.variations.all %}
+                                                    {{item.variation_categoria | capfirst}} :
+                                                    {{item.variation_valor | capfirst}} <br>
+                                                    {% endfor %}
+                                                    {% endif %}
+                                                </p>
+                                            </figcaption>
+                                        </figure>
+                                    </td>
+                                    <td>
+                                        <!-- col.// -->
+                                        <label for="">{{ cart_item.quantidade }}</label>
+                                    </td>
+                                    <td>
+                                        <div class="price-wrap">
+                                            <var class="price">R$
+                                                {{ cart_item.sub_total|floatformat:2 }}</var>
+                                        </div> <!-- price-wrap .// -->
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div> <!-- card.// -->
+                </div>
+            </aside> <!-- col.// -->
+
+            <aside class="col-lg-5">
+
+                <div class="card">
+                    <div class="card-body">
+                        <dl class="dlist-align">
+                            <dt>Total Produtos:</dt>
+                            <dd class="text-right">R$ {{ total|floatformat:2 }}</dd>
+                        </dl>
+                        <dl class="dlist-align">
+                            <dt>Frete:</dt>
+                            <dd class="text-right"> R$ {{taxa|floatformat:2 }}</dd>
+                        </dl>
+                        <dl class="dlist-align">
+                            <dt>Total Pagamento:</dt>
+                            <dd class="text-right text-dark b"><strong>R$ {{ grand_total|floatformat:2 }}</strong></dd>
+                        </dl>
+                        <hr>
+                            
+                        <div id="wallet_container">
+                            <!-- Mercado Pago Button.// -->
+                        </div>
+                        <div id="paypal-button-container">
+                            <!-- PayPal button// -->
+                        </div>
+
+                    </div> <!-- card-body.// -->
+                </div> <!-- card.// -->
+
+            </aside> <!-- col.// -->
+
+
+        </div> <!-- row.// -->
+        <!-- ============================ COMPONENT 1 END .// ================================= -->
+
+    </div> <!-- container .//  -->
+</section>
+<script>
+    const mp = new MercadoPago('APP_USR-a9ba7e66-6459-41a9-a588-ee10a5727b5c');
+    const bricksBuilder = mp.bricks();
+
+    mp.bricks().create("wallet", "wallet_container", {
+        initialization: {
+            preferenceId: "wallet_container",
+            redirectMode: "modal"
+        },
+    });
+</script>
+
+<script>
+    window.paypal
+        .Buttons({
+
+            async createOrder() {
+                try {
+                    const response = await fetch("/api/orders", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        // use the "body" param to optionally pass additional order information
+                        // like product ids and quantities
+                        body: JSON.stringify({
+                            cart: [
+                                {
+                                    id: "YOUR_PRODUCT_ID",
+                                    quantity: "YOUR_PRODUCT_QUANTITY",
+                                },
+                            ],
+                        }),
+                    });
+
+                    const orderData = await response.json();
+
+                    if (orderData.id) {
+                        return orderData.id;
+                    } else {
+                        const errorDetail = orderData?.details?.[0];
+                        const errorMessage = errorDetail
+                            ? `${errorDetail.issue} ${errorDetail.description} (${orderData.debug_id})`
+                            : JSON.stringify(orderData);
+
+                        throw new Error(errorMessage);
+                    }
+                } catch (error) {
+                    console.error(error);
+                    resultMessage(`Could not initiate PayPal Checkout...<br><br>${error}`);
+                }
+            },
+            async onApprove(data, actions) {
+                try {
+                    const response = await fetch(`/api/orders/${data.orderID}/capture`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    });
+
+                    const orderData = await response.json();
+
+                    // Three cases to handle:
+                    //   (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
+                    //   (2) Other non-recoverable errors -> Show a failure message
+                    //   (3) Successful transaction -> Show confirmation or thank you message
+
+                    const errorDetail = orderData?.details?.[0];
+
+                    if (errorDetail?.issue === "INSTRUMENT_DECLINED") {
+                        // (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
+                        // recoverable state, per https://developer.paypal.com/docs/checkout/standard/customize/handle-funding-failures/
+                        return actions.restart();
+                    } else if (errorDetail) {
+                        // (2) Other non-recoverable errors -> Show a failure message
+                        throw new Error(`${errorDetail.description} (${orderData.debug_id})`);
+                    } else if (!orderData.purchase_units) {
+                        throw new Error(JSON.stringify(orderData));
+                    } else {
+                        // (3) Successful transaction -> Show confirmation or thank you message
+                        // Or go to another URL:  actions.redirect('thank_you.html');
+                        const transaction =
+                            orderData?.purchase_units?.[0]?.payments?.captures?.[0] ||
+                            orderData?.purchase_units?.[0]?.payments?.authorizations?.[0];
+                        resultMessage(
+                            `Transaction ${transaction.status}: ${transaction.id}<br><br>See console for all available details`,
+                        );
+                        console.log(
+                            "Capture result",
+                            orderData,
+                            JSON.stringify(orderData, null, 2),
+                        );
+                    }
+                } catch (error) {
+                    console.error(error);
+                    resultMessage(
+                        `Sorry, your transaction could not be processed...<br><br>${error}`,
+                    );
+                }
+            },
+        })
+        .render("#paypal-button-container");
+</script>
+
+
+
+
+
+
+{% endblock %}

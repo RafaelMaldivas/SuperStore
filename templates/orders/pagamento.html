@@ -23,13 +23,8 @@
                         <p class="card-text text-uppercase">Observação: <b>{{order.order_note}}</b></p>
                     </div> <!-- card.// -->
                 </div>
-                <br>
-                <div class="card">
-                    <h5 class="card-header">Forma de Pagamento</h5>
-                    <div class="card-body">
-                        <p class="card-text">PayPal</p>
-                    </div> <!-- card.// -->
-                </div>
+
+
                 <br>
                 <div class="card">
                     <h5 class="card-header">Revisão dos Produtos</h5>
@@ -99,133 +94,56 @@
                             <dd class="text-right text-dark b"><strong>R$ {{ grand_total|floatformat:2 }}</strong></dd>
                         </dl>
                         <hr>
-                            
-                        <div id="wallet_container">
-                            <!-- Mercado Pago Button.// -->
+                        <div class="row">
+                            <button class="btn btn-primary col-12" data-toggle="modal" data-target="#modalqrcode">
+                                <div class="text-auto">
+                                    <img src="https://vetores.org/d/mercado-pago.svg" width="50px"> Pagar com Mercado
+                                    Pago
+                                </div>
+                            </button>
                         </div>
-                        <div id="paypal-button-container">
-                            <!-- PayPal button// -->
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <p class="text-sm text-muted">
+                                    Pague com segurança
+                                </p>
+                            </div>
                         </div>
+                        <!-- Modal -->
+                        <div class="modal fade" id="modalqrcode">
+                            <div class="modal-dialog modal-md">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">Pagar com PIX (QR Code)</h4>
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+                                    <div class="modal-body mx-auto">
+                                        <img src="{% url 'gerar_qrcode' %}?email={{ order.email }}&amount={{ grand_total|floatformat:2 }}"
+                                            alt="QR Code">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger"
+                                            data-dismiss="modal">Fechar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                    </div> <!-- card-body.// -->
-                </div> <!-- card.// -->
 
-            </aside> <!-- col.// -->
+                </div> <!-- card-body.// -->
+        </div> <!-- card.// -->
+
+        </aside> <!-- col.// -->
 
 
-        </div> <!-- row.// -->
-        <!-- ============================ COMPONENT 1 END .// ================================= -->
+    </div> <!-- row.// -->
+    <!-- ============================ COMPONENT 1 END .// ================================= -->
+
+
 
     </div> <!-- container .//  -->
 </section>
-<script>
-    const mp = new MercadoPago('APP_USR-a9ba7e66-6459-41a9-a588-ee10a5727b5c');
-    const bricksBuilder = mp.bricks();
-
-    mp.bricks().create("wallet", "wallet_container", {
-        initialization: {
-            preferenceId: "wallet_container",
-            redirectMode: "modal"
-        },
-    });
-</script>
-
-<script>
-    window.paypal
-        .Buttons({
-
-            async createOrder() {
-                try {
-                    const response = await fetch("/api/orders", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        // use the "body" param to optionally pass additional order information
-                        // like product ids and quantities
-                        body: JSON.stringify({
-                            cart: [
-                                {
-                                    id: "YOUR_PRODUCT_ID",
-                                    quantity: "YOUR_PRODUCT_QUANTITY",
-                                },
-                            ],
-                        }),
-                    });
-
-                    const orderData = await response.json();
-
-                    if (orderData.id) {
-                        return orderData.id;
-                    } else {
-                        const errorDetail = orderData?.details?.[0];
-                        const errorMessage = errorDetail
-                            ? `${errorDetail.issue} ${errorDetail.description} (${orderData.debug_id})`
-                            : JSON.stringify(orderData);
-
-                        throw new Error(errorMessage);
-                    }
-                } catch (error) {
-                    console.error(error);
-                    resultMessage(`Could not initiate PayPal Checkout...<br><br>${error}`);
-                }
-            },
-            async onApprove(data, actions) {
-                try {
-                    const response = await fetch(`/api/orders/${data.orderID}/capture`, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                    });
-
-                    const orderData = await response.json();
-
-                    // Three cases to handle:
-                    //   (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
-                    //   (2) Other non-recoverable errors -> Show a failure message
-                    //   (3) Successful transaction -> Show confirmation or thank you message
-
-                    const errorDetail = orderData?.details?.[0];
-
-                    if (errorDetail?.issue === "INSTRUMENT_DECLINED") {
-                        // (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
-                        // recoverable state, per https://developer.paypal.com/docs/checkout/standard/customize/handle-funding-failures/
-                        return actions.restart();
-                    } else if (errorDetail) {
-                        // (2) Other non-recoverable errors -> Show a failure message
-                        throw new Error(`${errorDetail.description} (${orderData.debug_id})`);
-                    } else if (!orderData.purchase_units) {
-                        throw new Error(JSON.stringify(orderData));
-                    } else {
-                        // (3) Successful transaction -> Show confirmation or thank you message
-                        // Or go to another URL:  actions.redirect('thank_you.html');
-                        const transaction =
-                            orderData?.purchase_units?.[0]?.payments?.captures?.[0] ||
-                            orderData?.purchase_units?.[0]?.payments?.authorizations?.[0];
-                        resultMessage(
-                            `Transaction ${transaction.status}: ${transaction.id}<br><br>See console for all available details`,
-                        );
-                        console.log(
-                            "Capture result",
-                            orderData,
-                            JSON.stringify(orderData, null, 2),
-                        );
-                    }
-                } catch (error) {
-                    console.error(error);
-                    resultMessage(
-                        `Sorry, your transaction could not be processed...<br><br>${error}`,
-                    );
-                }
-            },
-        })
-        .render("#paypal-button-container");
-</script>
-
-
-
-
 
 
 {% endblock %}

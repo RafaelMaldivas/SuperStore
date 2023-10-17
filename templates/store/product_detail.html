@@ -25,7 +25,7 @@
 							<h2 class="title">{{ single_product.produto_nome }}</h2>
 
 							<div class="mb-3">
-								<var class="price h4">R$ {{ single_product.preco|floatformat:2  }}</var>
+								<var class="price h4">R$ {{ single_product.preco|floatformat:2 }}</var>
 							</div>
 
 							<p>{{ single_product.descricao }}</p>
@@ -38,7 +38,8 @@
 									<select name="color" class="form-control" required>
 										<option value="" disabled selected>Escolha a cor</option>
 										{% for i in single_product.variation_set.colors %}
-											<option value="{{i.variation_valor | lower}}">{{i.variation_valor | capfirst}}</option>
+										<option value="{{i.variation_valor | lower}}">{{i.variation_valor | capfirst}}
+										</option>
 										{% endfor %}
 									</select>
 								</div>
@@ -49,20 +50,21 @@
 									<select name="size" class="form-control">
 										<option value="" disabled selected>Escolha o Tamanho</option>
 										{% for i in single_product.variation_set.sizes %}
-											<option value="{{i.variation_valor | lower}}">{{i.variation_valor | capfirst}}</option>
+										<option value="{{i.variation_valor | lower}}">{{i.variation_valor | capfirst}}
+										</option>
 										{% endfor %}
 									</select>
 								</div>
 							</div> <!-- row.// -->
 							<hr>
-							{% if single_product.estoque <= 0 %}
-								<h3 class="text-danger"> Produto Fora de Estoque </h3>
-							{% else %}
-								
+							{% if single_product.estoque <= 0 %} <h3 class="text-danger"> Produto Fora de Estoque </h3>
+								{% else %}
+
 								<button type="submit" class="btn  btn-primary"> <span class="text">Adicionar ao
-									Carrinho</span> <i class="fa-solid fa-cart-plus fa-beat-fade fa-lg"></i> </button>
-								
-							{% endif %}
+										Carrinho</span> <i class="fa-solid fa-cart-plus fa-beat-fade fa-lg"></i>
+								</button>
+
+								{% endif %}
 						</article> <!-- product-info-aside .// -->
 					</form>
 				</main> <!-- col.// -->
@@ -76,10 +78,53 @@
 			<div class="col-md-9">
 
 				<header class="section-heading">
-					<h3>Customer Reviews </h3>
+					<h3> Avaliações dos Clientes </h3>
 
 				</header>
 
+				<form action="{% url 'submit_review' single_product.id %}" method="POST">
+					{% csrf_token %}
+					<h5>Escreva a sua avaliação</h5>
+					<div>
+						<div class="rate">
+							<!-- Rating stars -->
+							<input type="radio" name="rating" id="rating10" value="5" required><label for="rating10"
+								title="5"></label>
+							<input type="radio" name="rating" id="rating9" value="4.5" required><label for="rating9"
+								title="4.5" class="half"></label>
+							<input type="radio" name="rating" id="rating8" value="4" required><label for="rating8"
+								title="4"></label>
+							<input type="radio" name="rating" id="rating7" value="3.5" required><label for="rating7"
+								title="3.5" class="half"></label>
+							<input type="radio" name="rating" id="rating6" value="3" required><label for="rating6"
+								title="3"></label>
+							<input type="radio" name="rating" id="rating5" value="2.5" required><label for="rating5"
+								title="2.5" class="half"></label>
+							<input type="radio" name="rating" id="rating4" value="2" required><label for="rating4"
+								title="2"></label>
+							<input type="radio" name="rating" id="rating3" value="1.5" required><label for="rating3"
+								title="1.5" class="half"></label>
+							<input type="radio" name="rating" id="rating2" value="1" required><label for="rating2"
+								title="1"></label>
+							<input type="radio" name="rating" id="rating1" value="0.5" required><label for="rating1"
+								title="0.5" class="half"></label>
+						</div>
+						<br>
+						Título Avaliação:
+						<input type="text" class="form-control" name="subject">
+						<br>
+						Avaliar:
+						<textarea class="form-control" name="review" rows="4"></textarea>
+						<br>
+						{% if user.is_authenticated %}
+						<input type="submit" value="Enviar Avaliação" class="btn btn-primary">
+						{% else %}
+						<p> Você precisa estar logado para postar uma avaliação!!    <span><a href="{% url 'login' %}">Login</a></span></p>
+						{% endif %}
+					</div>
+					{% include 'includes/alerts.html' %}
+				</form>
+				<br>
 				<article class="box mb-3">
 					<div class="icontext w-100">
 						<img src="{% static './images/avatars/avatar2.jpg' %}" class="img-xs icon rounded-circle">

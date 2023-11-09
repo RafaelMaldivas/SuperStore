@@ -67,24 +67,37 @@
 								{% endif %}
 						</article> <!-- product-info-aside .// -->
 					</form>
+					<div class="rating-star ml-4">
+						<h6>Avaliação Média do Produto : ({{ single_product.mediaReview|floatformat:1 }})
+							<span>
+								<i class="fa fa-star{% if  single_product.mediaReview  == 0.5 %}-half-o{% elif  single_product.mediaReview  < 1 %}-o {% endif %}"
+									aria-hidden="true"></i>
+								<i class="fa fa-star{% if  single_product.mediaReview  == 1.5 %}-half-o{% elif  single_product.mediaReview  < 2 %}-o {% endif %}"
+									aria-hidden="true"></i>
+								<i class="fa fa-star{% if  single_product.mediaReview  == 2.5 %}-half-o{% elif  single_product.mediaReview  < 3 %}-o {% endif %}"
+									aria-hidden="true"></i>
+								<i class="fa fa-star{% if  single_product.mediaReview  == 3.5 %}-half-o{% elif  single_product.mediaReview  < 4 %}-o {% endif %}"
+									aria-hidden="true"></i>
+								<i class="fa fa-star{% if  single_product.mediaReview  >= 4.5 %}-half-o{% elif  single_product.mediaReview  < 5 %}-o {% endif %}"
+									aria-hidden="true"></i>
+							</span>
+						</h6>
+						<h6>Total de {{ single_product.countReview }} avaliações</h6>
+					</div>
 				</main> <!-- col.// -->
 			</div> <!-- row.// -->
+			
 		</div> <!-- card.// -->
 		<!-- ============================ COMPONENT 1 END .// ================================= -->
-
 		<br>
 
 		<div class="row">
 			<div class="col-md-9">
-
-				<header class="section-heading">
-					<h3> Avaliações dos Clientes </h3>
-
-				</header>
-
+			
 				<form action="{% url 'submit_review' single_product.id %}" method="POST">
 					{% csrf_token %}
 					<h5>Escreva a sua avaliação</h5>
+										
 					<div>
 						<div class="rate">
 							<!-- Rating stars -->
@@ -116,6 +129,7 @@
 						Avaliar:
 						<textarea class="form-control" name="review" rows="4"></textarea>
 						<br>
+						<!-- colocar um if aqui para a avaliação só ser feita por clientes que compraram o produto-->
 						{% if user.is_authenticated %}
 						<input type="submit" value="Enviar Avaliação" class="btn btn-primary">
 						{% else %}
@@ -125,24 +139,37 @@
 					{% include 'includes/alerts.html' %}
 				</form>
 				<br>
-				<article class="box mb-3">
-					<div class="icontext w-100">
-						<img src="{% static './images/avatars/avatar2.jpg' %}" class="img-xs icon rounded-circle">
-						<div class="text">
-							<span class="date text-muted float-md-right">24.04.2020 </span>
-							<h6 class="mb-1">Mike John </h6>
+				<header class="section-heading">
+					<h3> Avaliações dos Clientes </h3>
+				</header>
+				{% for review in reviews %}
+					<article class="box mb-3">
+						<div class="icontext w-100">
+							
+							<div class="text">
+								<span class="date text-muted float-md-right">{{ review.created_at }} </span>
+								<h6 class="mb-1"> {{ review.usuario.full_name}} </h6>
 
+							</div>
+						</div> <!-- icontext.// -->
+						<div class="mt-3">
+							<h6>{{review.subject}}</h6>
+							<div class="rating-star">
+								<span>
+									<i class="fa fa-star{% if review.rating == 0.5 %}-half-o{% elif review.rating < 1 %}-o {% endif %}" aria-hidden="true"></i>
+									<i class="fa fa-star{% if review.rating == 1.5 %}-half-o{% elif review.rating < 2 %}-o {% endif %}" aria-hidden="true"></i>
+									<i class="fa fa-star{% if review.rating == 2.5 %}-half-o{% elif review.rating < 3 %}-o {% endif %}" aria-hidden="true"></i>
+									<i class="fa fa-star{% if review.rating == 3.5 %}-half-o{% elif review.rating < 4 %}-o {% endif %}" aria-hidden="true"></i>
+									<i class="fa fa-star{% if review.rating == 4.5 %}-half-o{% elif review.rating < 5 %}-o {% endif %}" aria-hidden="true"></i>
+								</span>
+							</div>
+							<br>
+							<p>
+								{{review.review}}
+							</p>
 						</div>
-					</div> <!-- icontext.// -->
-					<div class="mt-3">
-						<p>
-							Dummy comment Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-							tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-							quis nostrud exercitation ullamco laboris nisi ut aliquip
-						</p>
-					</div>
-				</article>
-
+					</article>
+				{% endfor %}
 
 
 			</div> <!-- col.// -->

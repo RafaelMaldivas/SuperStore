@@ -42,3 +42,13 @@ input:checked + label:hover, input:checked ~ label:hover, label:hover ~ input:ch
     color:#cc9000;
 } /* colorir estrelas clicadas e as que estão antes dela */
 
+.rating-star i{
+    
+    color: rgb(227, 227, 27);
+}
+
+.rating-star.half:before {
+    content: "\f089";
+    position: absolute;
+    padding-right: 0;
+}

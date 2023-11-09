@@ -7,6 +7,7 @@ from .forms import ReviewForm
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib import messages
+from orders.models import OrderProduct
 # Create your views here.
 
 
@@ -40,10 +41,22 @@ def product_detail(request, categoria_slug, produto_slug):
         
     except Exception as e:
         raise e
+    
+    if request.user.is_authenticated:
+        try: 
+            orderproduto = OrderProduct.objects.filter(user=request.user, produto_id=single_product.id).exists()
+        except OrderProduct.DoesNotExist:
+            orderproduto = None
+    else:
+        orderproduto = None
+
+    reviews = ReviewRating.objects.filter(produto_id=single_product.id, status=True)
 
     context = {
         'single_product': single_product,
         'in_cart':in_cart,
+        'reviews': reviews,
+        'oredrproduto': orderproduto,
     }
 
     return render(request, 'store/product_detail.html', context)
